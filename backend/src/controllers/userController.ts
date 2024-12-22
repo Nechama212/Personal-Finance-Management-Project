@@ -14,19 +14,24 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 
 export const getUserByEmail = async (req: Request, res: Response): Promise<void> => {
   try {
+    console.log(`Fetching user with email: ${req.params.email}`);
     const user = await prisma.user.findUnique({
       where: { Email: req.params.email }
     });
+    console.log('User found:', user);
     res.status(200).json(user);
   } catch (error) {
+    console.error('Error fetching user:', (error as Error).message);
     res.status(400).json({ error: (error as Error).message });
   }
 };
 
+
 export const checkExistingUsers = async (req: Request, res: Response): Promise<void> => {
   try {
+    console.log('checkExistingUsers called');
     const users = await prisma.user.findMany();
-    console.log('Users:', users);
+    console.log('Users:', users); // הוסף לוג
     res.status(200).json(users);
   } catch (error) {
     console.error('Error fetching users:', (error as Error).message);

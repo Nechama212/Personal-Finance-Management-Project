@@ -1,13 +1,36 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express, { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
+
+prisma.$connect()
+  .then(() => {
+    console.log('Connected to the database');
+  })
+  .catch((error) => {
+    console.error('Error connecting to the database:', error.message);
+  });
+
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(`Request URL: ${req.url}`);
+  next();
+});
 
 // Home route
 app.get('/', (req: Request, res: Response) => {
