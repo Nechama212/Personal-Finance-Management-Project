@@ -18,10 +18,16 @@ interface Income {
   CategoryName: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+}
+
 const Transactions: React.FC = () => {
   const [email, setEmail] = useState("example@example.com");
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [incomes, setIncomes] = useState<Income[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -46,9 +52,43 @@ const Transactions: React.FC = () => {
       }
     };
 
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories');
+        const data = await response.json();
+        console.log("Fetched Categories:", data);
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
     fetchExpenses();
     fetchIncomes();
+    fetchCategories();
   }, [email]);
+  const addCategory = async (categoryName: string) => {
+    try {
+      const response = await fetch('/api/categories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ CategoryName: categoryName, Email: email }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        console.error("Error creating category:", errorMessage);
+        return;
+      }
+
+      const newCategory = await response.json();
+      setCategories([...categories, newCategory]);
+    } catch (error) {
+      console.error("Error creating category:", error);
+    }
+  };
 
   const updateExpense = async (expense: Expense) => {
     try {
@@ -215,12 +255,14 @@ const Transactions: React.FC = () => {
           updateExpense={updateExpense}
           deleteExpense={deleteExpense}
           createExpense={createExpense}
+          addCategory={addCategory}
         />
         <Incomes
           incomes={incomes}
           updateIncome={updateIncome}
           deleteIncome={deleteIncome}
           createIncome={createIncome}
+          addCategory={addCategory}
         />
       </div>
     </div>

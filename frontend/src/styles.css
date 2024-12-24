@@ -1,0 +1,93 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f4f4f4; /* Background color for the body */
+}
+
+h1, h2, h3 {
+  color: #333; /* Text color for headings */
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px; /* Margin below the main heading */
+}
+
+.container {
+  max-width: 1200px; /* Max width of the container */
+  margin: 0 auto;
+  background: white; /* Background color of the container */
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for container */
+}
+
+button {
+  background-color: #007bff; /* Button background color */
+  color: white;
+  border: none;
+  padding: 5px 10px; /* Reduce padding to make buttons smaller */
+  cursor: pointer;
+  margin: 5px 0;
+  transition: background-color 0.3s; /* Transition effect for background color */
+  font-size: 12px; /* Smaller font size for buttons */
+}
+
+button:hover {
+  background-color: #0056b3; /* Button hover background color */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 40px; /* Space between tables */
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  font-size: 12px; /* Font size for table cells */
+  border: none; /* Remove borders from table cells */
+}
+
+th {
+  background-color: #f2f2f2; /* Background color for table headers */
+  color: #333;
+}
+
+th:first-child, td:first-child {
+  min-width: 130px; /* Minimum width for the first column */
+  max-width: 130px; /* Maximum width for the first column */
+  white-space: nowrap; /* Prevent line breaks */
+  overflow: hidden; /* Hide overflow content */
+  text-overflow: ellipsis; /* Add ellipsis for overflow content */
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9; /* Background color for even rows */
+}
+
+tr:hover {
+  background-color: #f1f1f1; /* Background color for hovered rows */
+}
+
+form {
+  display: flex;
+  flex-direction: column; /* Display form elements in column */
+}
+
+label {
+  margin-bottom: 5px;
+  color: #555; /* Text color for labels */
+}
+
+input {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc; /* Border color for input fields */
+  border-radius: 4px;
+}
+
+strong {
+  color: #333; /* Text color for strong elements */
+}

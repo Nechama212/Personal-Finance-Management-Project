@@ -1,9 +1,9 @@
 import React from 'react';
-import Transactions from './components/Transactions';
+import Transactions from './components/Transactions'; 
 
 const App: React.FC = () => {
   return (
-    <div>
+    <div className="container">
       <Transactions />
     </div>
   );
