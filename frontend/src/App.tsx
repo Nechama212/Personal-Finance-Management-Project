@@ -2,7 +2,7 @@ import React from 'react';
 import Transactions from './components/Transactions/Transactions'; // Path to your Transactions component
 import MonthlyBudget from './components/MonthlyBudget/MonthlyBudget'; // Path to your MonthlyBudget component
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <div className="container">
       <h1>Finance Management</h1>
