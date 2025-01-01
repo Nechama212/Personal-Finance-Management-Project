@@ -1,75 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import Expenses from './Expenses';
 import Incomes from './Incomes';
+; import { Expense, Income, Category } from './TransactionsTypes'; // Import interfaces from TransactionsTypes
 
-interface Expense {
-  ExpenseID: number;
-  Description: string;
-  Amount: number;
-  Date: string;
-  CategoryName: string;
-}
-
-interface Income {
-  IncomeID: number;
-  Description: string;
-  Amount: number;
-  Date: string;
-  CategoryName: string;
-}
-
-interface Category {
-  id: number;
-  name: string;
-}
 
 const Transactions: React.FC = () => {
   const [email, setEmail] = useState("example@example.com");
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [incomes, setIncomes] = useState<Income[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [expenseCategories, setExpenseCategories] = useState<string[]>([]);
+  const [incomeCategories, setIncomeCategories] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchExpenses = async () => {
-      try {
-        const response = await fetch(`/api/expenses/${email}`);
-        const data = await response.json();
-        console.log("Fetched Expenses:", data);
-        setExpenses(data);
-      } catch (error) {
-        console.error("Error fetching expenses:", error);
-      }
-    };
+    if (email) {
+      fetch(`/api/expenses/${email}`)
+        .then(response => response.json())
+        .then((data: Expense[]) => {
+          const categoryNames = [...new Set(data.map(expense => expense.CategoryName.toLowerCase()))];
+          setExpenseCategories(categoryNames);
+          setExpenses(data);
+        })
+        .catch(error => console.error('Error fetching expenses:', error));
 
-    const fetchIncomes = async () => {
-      try {
-        const response = await fetch(`/api/incomes/${email}`);
-        const data = await response.json();
-        console.log("Fetched Incomes:", data);
-        setIncomes(data);
-      } catch (error) {
-        console.error("Error fetching incomes:", error);
-      }
-    };
-
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch('/api/categories');
-        const data = await response.json();
-        console.log("Fetched Categories:", data);
-        setCategories(data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchExpenses();
-    fetchIncomes();
-    fetchCategories();
+      fetch(`/api/incomes/${email}`)
+        .then(response => response.json())
+        .then((data: Income[]) => {
+          const categoryNames = [...new Set(data.map(income => income.CategoryName.toLowerCase()))];
+          setIncomeCategories(categoryNames);
+          setIncomes(data);
+        })
+        .catch(error => console.error('Error fetching incomes:', error));
+    }
   }, [email]);
-  const addCategory = async (categoryName: string) => {
+
+  const addCategory = async (categoryName: string, type: 'expense' | 'income') => {
+    const endpoint = type === 'expense' ? '/api/categories/expense' : '/api/categories/income';
+
     try {
-      const response = await fetch('/api/categories', {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -84,9 +52,14 @@ const Transactions: React.FC = () => {
       }
 
       const newCategory = await response.json();
-      setCategories([...categories, newCategory]);
+      console.log("New Category:", newCategory);
+      if (type === 'expense') {
+        setExpenseCategories([...expenseCategories, newCategory.name.toLowerCase()]);
+      } else {
+        setIncomeCategories([...incomeCategories, newCategory.name.toLowerCase()]);
+      }
     } catch (error) {
-      console.error("Error creating category:", error);
+      console.error(`Error creating ${type} category:`, error);
     }
   };
 
@@ -185,6 +158,7 @@ const Transactions: React.FC = () => {
         body: JSON.stringify(completeIncome),
       });
       const updatedIncome = await response.json();
+      console.log("Updated Income:", updatedIncome);
       setIncomes(incomes.map(i => (i.IncomeID === updatedIncome.IncomeID ? updatedIncome : i)));
     } catch (error) {
       console.error("Error updating income:", error);
@@ -255,14 +229,18 @@ const Transactions: React.FC = () => {
           updateExpense={updateExpense}
           deleteExpense={deleteExpense}
           createExpense={createExpense}
-          addCategory={addCategory}
+          addCategory={(categoryName: string) => addCategory(categoryName, 'expense')}
+          categories={expenseCategories} // Pass expense categories prop
+          userEmail={email} // Pass user email
         />
         <Incomes
           incomes={incomes}
           updateIncome={updateIncome}
           deleteIncome={deleteIncome}
           createIncome={createIncome}
-          addCategory={addCategory}
+          addCategory={(categoryName: string) => addCategory(categoryName, 'income')}
+          categories={incomeCategories} // Pass income categories prop
+          userEmail={email} // Pass user email
         />
       </div>
     </div>

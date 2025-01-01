@@ -1,7 +1,7 @@
 import React, { useState, useEffect, FC } from 'react';
 import CategorySelector from './CategorySelector';
 import BudgetInput from './BudgetInput';
-import { Expense, Budget } from './MonthlyBudgetTypes'; // Correct path
+import { Expense, Budget } from './MonthlyBudgetTypes'; 
 
 const MonthlyBudget: FC = () => {
   const [userEmail, setUserEmail] = useState<string>('');

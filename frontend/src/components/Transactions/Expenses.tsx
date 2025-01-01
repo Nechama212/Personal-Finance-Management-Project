@@ -1,22 +1,39 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { format } from 'date-fns';
+import CategorySelector from '../MonthlyBudget/CategorySelector'; // Import CategorySelector
+import { Expense, Category } from './TransactionsTypes';
 
-interface Expense {
-  ExpenseID: number;
-  Description: string;
-  Amount: number;
-  Date: string;
-  CategoryName: string;
-}
-
-const Expenses: React.FC<{ expenses: Expense[], updateExpense: (expense: Expense) => void, deleteExpense: (id: number) => void, createExpense: (newExpense: Omit<Expense, 'ExpenseID'>) => void, addCategory: (category: string) => void }> = ({ expenses, updateExpense, deleteExpense, createExpense, addCategory }) => {
+const Expenses: React.FC<{ 
+  expenses: Expense[], 
+  updateExpense: (expense: Expense) => void, 
+  deleteExpense: (id: number) => void, 
+  createExpense: (newExpense: Omit<Expense, 'ExpenseID'>) => void, 
+  addCategory: (categoryName: string) => void,
+  categories: string[],
+  userEmail: string
+}> = ({ expenses, updateExpense, deleteExpense, createExpense, addCategory, categories, userEmail }) => {
   const [newExpense, setNewExpense] = useState<Omit<Expense, 'ExpenseID'>>({ Description: '', Amount: 0, Date: '', CategoryName: '' });
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [newCategory, setNewCategory] = useState('');
   const [showForm, setShowForm] = useState(false); // state to show/hide form
+  const [showAddCategory, setShowAddCategory] = useState(false); // Show add category form
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [expenseCategories, setExpenseCategories] = useState<string[]>(categories); // Add setExpenseCategories
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (userEmail) {
+      fetch(`/api/expenses/${userEmail}`)
+        .then(response => response.json())
+        .then((data: Expense[]) => {
+          const categoryNames = [...new Set(data.map(expense => expense.CategoryName.toLowerCase()))];
+          setExpenseCategories(categoryNames);
+        })
+        .catch(error => console.error('Error fetching expense categories:', error));
+    }
+  }, [userEmail]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (editingExpense) {
       setEditingExpense({ ...editingExpense, [name]: name === 'Amount' ? parseFloat(value) : value });
@@ -29,12 +46,9 @@ const Expenses: React.FC<{ expenses: Expense[], updateExpense: (expense: Expense
     e.preventDefault();
 
     if (editingExpense) {
-      console.log("Updating expense:", editingExpense);
-      updateExpense(editingExpense);
+      updateExpense({ ...editingExpense, CategoryName: selectedCategory || editingExpense.CategoryName });
       setEditingExpense(null);
     } else {
-      console.log("Submitting new expense:", newExpense);
-
       if (!newExpense.Date) {
         setError("Date is required.");
         return;
@@ -46,7 +60,7 @@ const Expenses: React.FC<{ expenses: Expense[], updateExpense: (expense: Expense
       }
 
       setError(null);
-      createExpense(newExpense);
+      createExpense({ ...newExpense, CategoryName: selectedCategory || newExpense.CategoryName });
       setNewExpense({ Description: '', Amount: 0, Date: '', CategoryName: '' });
     }
     setShowForm(false); // Close the form after submission
@@ -57,17 +71,44 @@ const Expenses: React.FC<{ expenses: Expense[], updateExpense: (expense: Expense
     setShowForm(true); // Show form when editing an expense
   };
 
-  const handleAddCategory = () => {
-    if (newCategory) {
-      addCategory(newCategory);
-      setNewCategory('');
+  const handleCategorySelect = (category: string) => {
+    if (category === 'Other') {
+      setShowAddCategory(true);
+    } else {
+      setSelectedCategory(category);
+      setShowAddCategory(false);
     }
   };
 
-  // Calculate total expenses amount
-  const totalExpenses = useMemo(() => expenses.reduce((acc, expense) => acc + expense.Amount, 0), [expenses]);
+  const handleAddCategory = async () => {
+    if (newCategory && !expenseCategories.includes(newCategory.toLowerCase())) {
+      try {
+        const response = await fetch('/api/categories', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ CategoryName: newCategory, Email: userEmail }),
+        });
 
-  console.log("Rendering Expenses:", expenses);
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          console.error("Error creating category:", errorMessage);
+          return;
+        }
+
+        const addedCategory = await response.json();
+        setExpenseCategories([...expenseCategories, addedCategory.CategoryName.toLowerCase()]);
+        setSelectedCategory(addedCategory.CategoryName.toLowerCase());
+        setShowAddCategory(false);
+        setNewCategory('');
+      } catch (error) {
+        console.error("Error creating category:", error);
+      }
+    }
+  };
+
+  const totalExpenses = useMemo(() => expenses.reduce((acc, expense) => acc + expense.Amount, 0), [expenses]);
 
   return (
     <div>
@@ -135,23 +176,25 @@ const Expenses: React.FC<{ expenses: Expense[], updateExpense: (expense: Expense
             />
           </label>
           <label>
-            <strong>Category Name:</strong>
-            <input
-              type="text"
-              name="CategoryName"
-              value={editingExpense ? editingExpense.CategoryName : newExpense.CategoryName}
-              onChange={handleChange}
+            <strong>Category:</strong>
+            <CategorySelector 
+              categories={[...expenseCategories.map(category => category.toLowerCase()), 'Other']} 
+              onSelect={handleCategorySelect} 
             />
           </label>
-          <label>
-            <strong>Add New Category:</strong>
-            <input
-              type="text"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-            />
-            <button type="button" onClick={handleAddCategory}>Add Category</button>
-          </label>
+          {showAddCategory && (
+            <div>
+              <label>
+                <strong>Add New Category:</strong>
+                <input
+                  type="text"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                />
+                <button type="button" onClick={handleAddCategory}>Add Category</button>
+              </label>
+            </div>
+          )}
           <button type="submit">{editingExpense ? 'Update' : 'Create'}</button>
         </form>
       )}
