@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Expenses from './Expenses';
 import Incomes from './Incomes';
-; import { Expense, Income, Category } from './TransactionsTypes'; // Import interfaces from TransactionsTypes
-
+import { Expense, Income, Category } from './TransactionsTypes'; // Import interfaces from TransactionsTypes
 
 const Transactions: React.FC = () => {
   const [email, setEmail] = useState("example@example.com");

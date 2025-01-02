@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FC } from 'react';
+import { format, getMonth, getYear } from 'date-fns';
 import CategorySelector from './CategorySelector';
 import BudgetInput from './BudgetInput';
 import { Expense, Budget } from './MonthlyBudgetTypes'; 
@@ -132,6 +133,9 @@ const MonthlyBudget: FC = () => {
       .filter(expense => expense.CategoryName.toLowerCase() === lowerCategoryName)
       .reduce((total, expense) => total + expense.Amount, 0);
   };
+  
+
+
 
   const isOverBudget = (budget: Budget) => {
     const spentAmount = calculateSpentAmount(budget.CategoryName);
