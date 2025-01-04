@@ -4,6 +4,7 @@ dotenv.config();
 import express, { Request, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
+import http from 'http'; // Importing the http module
 
 const prisma = new PrismaClient({
   datasources: {
@@ -24,7 +25,8 @@ prisma.$connect()
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Adjust the limit as needed
+app.use(express.urlencoded({ limit: '10mb', extended: true })); // Adjust the limit as needed
 app.use(cors());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -72,8 +74,12 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json({ error: err.message });
 });
 
+// Creating the HTTP server and setting the maximum header size
+const server = http.createServer(app);
+server.maxHeadersCount = 1000; // Adjust the value as needed
+
 // Starting the server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   console.log(`Try accessing http://localhost:${port} in your browser`);
 });

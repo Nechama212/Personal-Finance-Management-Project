@@ -34,8 +34,6 @@ model Category {
   User          User     @relation(fields: [Email], references: [Email])
 }
 
-
-
 model Expense {
   ExpenseID     Int     @id @default(autoincrement())
   Email         String
@@ -102,4 +100,5 @@ model Analytics {
   Email         String
 
   User          User     @relation(fields: [Email], references: [Email])
+  category      Category  @relation(fields: [CategoryName], references: [CategoryName])
 }
