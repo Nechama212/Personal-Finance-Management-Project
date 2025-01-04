@@ -13,8 +13,14 @@ const Transactions: React.FC = () => {
   useEffect(() => {
     if (email) {
       fetch(`/api/expenses/${email}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then((data: Expense[]) => {
+          console.log(data);
           const categoryNames = [...new Set(data.map(expense => expense.CategoryName.toLowerCase()))];
           setExpenseCategories(categoryNames);
           setExpenses(data);
@@ -22,8 +28,14 @@ const Transactions: React.FC = () => {
         .catch(error => console.error('Error fetching expenses:', error));
 
       fetch(`/api/incomes/${email}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then((data: Income[]) => {
+          console.log(data);
           const categoryNames = [...new Set(data.map(income => income.CategoryName.toLowerCase()))];
           setIncomeCategories(categoryNames);
           setIncomes(data);

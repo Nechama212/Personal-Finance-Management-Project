@@ -3,7 +3,6 @@ import { format } from 'date-fns';
 import CategorySelector from '../MonthlyBudget/CategorySelector'; // Import CategorySelector
 import { Income, Category } from './TransactionsTypes';
 
-
 const Incomes: React.FC<{ 
   incomes: Income[], 
   updateIncome: (income: Income) => void, 
@@ -25,7 +24,12 @@ const Incomes: React.FC<{
   useEffect(() => {
     if (userEmail) {
       fetch(`/api/incomes/${userEmail}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then((data: Income[]) => {
           const categoryNames = [...new Set(data.map(income => income.CategoryName.toLowerCase()))];
           setIncomeCategories(categoryNames);

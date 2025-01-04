@@ -24,7 +24,12 @@ const Expenses: React.FC<{
   useEffect(() => {
     if (userEmail) {
       fetch(`/api/expenses/${userEmail}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then((data: Expense[]) => {
           const categoryNames = [...new Set(data.map(expense => expense.CategoryName.toLowerCase()))];
           setExpenseCategories(categoryNames);
