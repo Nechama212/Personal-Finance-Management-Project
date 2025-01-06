@@ -31,7 +31,7 @@ export const checkExistingUsers = async (req: Request, res: Response): Promise<v
   try {
     console.log('checkExistingUsers called');
     const users = await prisma.user.findMany();
-    console.log('Users:', users); // הוסף לוג
+    console.log('Users:', users); 
     res.status(200).json(users);
   } catch (error) {
     console.error('Error fetching users:', (error as Error).message);

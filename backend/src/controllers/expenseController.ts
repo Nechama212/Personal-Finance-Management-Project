@@ -15,6 +15,38 @@ const getAllExpensesByEmail = async (req: Request, res: Response): Promise<void>
   }
 };
 
+// Get expenses by category
+const getExpensesByCategory = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, category } = req.params;
+    const expenses = await prisma.expense.findMany({
+      where: {
+        Email: email,
+        CategoryName: category
+      }
+    });
+    res.json(expenses);
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
+};
+
+// Get expenses by date
+const getExpensesByDate = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, date } = req.params;
+    const expenses = await prisma.expense.findMany({
+      where: {
+        Email: email,
+        Date: new Date(date)
+      }
+    });
+    res.json(expenses);
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
+};
+
 // Create a new expense and check for budget exceedance
 const createExpense = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -95,6 +127,8 @@ const deleteExpenseById = async (req: Request, res: Response): Promise<void> => 
 
 export {
   getAllExpensesByEmail,
+  getExpensesByCategory,
+  getExpensesByDate,
   createExpense,
   updateExpenseById,
   deleteExpenseById
