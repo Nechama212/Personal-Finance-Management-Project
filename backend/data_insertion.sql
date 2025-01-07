@@ -1,57 +1,142 @@
--- מחיקת נתונים קיימים
-TRUNCATE TABLE public."User" RESTART IDENTITY CASCADE;
-TRUNCATE TABLE public."Category" RESTART IDENTITY CASCADE;
-TRUNCATE TABLE public."Analytics" RESTART IDENTITY CASCADE;
-TRUNCATE TABLE public."Expense" RESTART IDENTITY CASCADE;
-TRUNCATE TABLE public."Income" RESTART IDENTITY CASCADE;
-TRUNCATE TABLE public."MonthlyBudget" RESTART IDENTITY CASCADE;
-TRUNCATE TABLE public."SavingGoal" RESTART IDENTITY CASCADE;
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS "Analytics";
+DROP TABLE IF EXISTS "MonthlyBudget";
+DROP TABLE IF EXISTS "SavingGoal";
+DROP TABLE IF EXISTS "Income";
+DROP TABLE IF EXISTS "Expense";
+DROP TABLE IF EXISTS "Category";
+DROP TABLE IF EXISTS "User";
 
--- Users
-INSERT INTO public."User" ("Email", "UserName", "Password", "Language") VALUES
-('example@example.com', 'exampleuser', 'password123', 'en'),
-('testuser1@example.com', 'testuser1', 'password456', 'en'),
-('testuser2@example.com', 'testuser2', 'password789', 'en');
+-- Create User table
+CREATE TABLE "User" (
+  "Email" VARCHAR(255) PRIMARY KEY,  
+  "UserName" VARCHAR(255) NOT NULL,  
+  "Password" VARCHAR(255) NOT NULL,  
+  "Language" VARCHAR(50) NOT NULL   
+);
 
--- Categories
-INSERT INTO public."Category" ("CategoryID", "CategoryName", "Email") VALUES
-(1, 'Groceries', 'example@example.com'),
-(2, 'Utilities', 'example@example.com'),
-(3, 'Entertainment', 'testuser1@example.com'),
-(4, 'Travel', 'testuser2@example.com'),
-(5, 'Salary', 'example@example.com'),
-(6, 'Freelance', 'testuser1@example.com'), -- הוספת קטגוריית Freelance
-(7, 'Business', 'testuser2@example.com'); -- הוספת קטגוריית Business
+-- Insert sample data into User table (only if the user doesn't exist)
+INSERT INTO "User" ("Email", "UserName", "Password", "Language") 
+SELECT 'example@example.com', 'User One', 'password123', 'Hebrew'
+WHERE NOT EXISTS (SELECT 1 FROM "User" WHERE "Email" = 'example@example.com');
 
--- Analytics
-INSERT INTO public."Analytics" ("AnalyticsID", "CategoryName", "Metric", "Value", "Date", "Email") VALUES
-(1, 'Groceries', 'spending', 200, '2023-01-01', 'example@example.com'),
-(2, 'Utilities', 'usage', 300, '2023-01-01', 'example@example.com'),
-(3, 'Entertainment', 'spending', 150, '2023-02-01', 'testuser1@example.com'),
-(4, 'Travel', 'spending', 400, '2023-03-01', 'testuser2@example.com');
+-- Create Category table
+CREATE TABLE "Category" (
+  "CategoryID" SERIAL PRIMARY KEY,    
+  "CategoryName" VARCHAR(255) UNIQUE NOT NULL,  
+  "Email" VARCHAR(255) DEFAULT 'example@example.com',  
+  CONSTRAINT "FK_Category_User" FOREIGN KEY ("Email") REFERENCES "User"("Email")  
+);
 
--- Expenses
-INSERT INTO public."Expense" ("ExpenseID", "Email", "Amount", "Date", "CategoryName", "Description") VALUES
-(1, 'example@example.com', 50.75, '2023-01-02', 'Groceries', 'Bought fruits and vegetables'),
-(2, 'example@example.com', 120.00, '2023-01-03', 'Utilities', 'Electricity bill payment'),
-(3, 'testuser1@example.com', 75.00, '2023-02-05', 'Entertainment', 'Movie night'),
-(4, 'testuser2@example.com', 250.00, '2023-03-10', 'Travel', 'Flight tickets');
+-- Insert sample data into Category table (use existing "example@example.com")
+INSERT INTO "Category" ("CategoryName", "Email") 
+SELECT 'Food', 'example@example.com'
+WHERE NOT EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Food');
+INSERT INTO "Category" ("CategoryName", "Email") 
+SELECT 'Transport', 'example@example.com'
+WHERE NOT EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Transport');
+INSERT INTO "Category" ("CategoryName", "Email") 
+SELECT 'Entertainment', 'example@example.com'
+WHERE NOT EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Entertainment');
+INSERT INTO "Category" ("CategoryName", "Email") 
+SELECT 'Salary', 'example@example.com'
+WHERE NOT EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Salary');
 
--- Income
-INSERT INTO public."Income" ("IncomeID", "Email", "Amount", "Date", "CategoryName", "Description") VALUES
-(1, 'example@example.com', 2500.00, '2023-01-01', 'Salary', 'Monthly salary'),
-(2, 'testuser1@example.com', 3000.00, '2023-02-01', 'Freelance', 'Project payment'),
-(3, 'testuser2@example.com', 3500.00, '2023-03-01', 'Business', 'Quarterly revenue');
+-- Create Expense table
+CREATE TABLE "Expense" (
+  "ExpenseID" SERIAL PRIMARY KEY,  
+  "Email" VARCHAR(255) NOT NULL,  
+  "Amount" FLOAT NOT NULL,       
+  "Date" TIMESTAMP NOT NULL,     
+  "CategoryName" VARCHAR(255) NOT NULL,  
+  "Description" VARCHAR(255),    
+  CONSTRAINT "FK_Expense_User" FOREIGN KEY ("Email") REFERENCES "User"("Email"),  
+  CONSTRAINT "FK_Expense_Category" FOREIGN KEY ("CategoryName") REFERENCES "Category"("CategoryName")  
+);
 
--- Monthly Budgets
-INSERT INTO public."MonthlyBudget" ("BudgetID", "Email", "CategoryName", "BudgetAmount", "SpentAmount", "BudgetMonth") VALUES
-(1, 'example@example.com', 'Groceries', 300.00, 50.75, '2023-01-01'),
-(2, 'example@example.com', 'Utilities', 150.00, 120.00, '2023-01-01'),
-(3, 'testuser1@example.com', 'Entertainment', 200.00, 75.00, '2023-02-01'),
-(4, 'testuser2@example.com', 'Travel', 500.00, 250.00, '2023-03-01');
+-- Insert sample data into Expense table (use existing "example@example.com")
+INSERT INTO "Expense" ("Email", "Amount", "Date", "CategoryName", "Description") 
+SELECT 'example@example.com', 150.50, '2025-01-05 14:00:00', 'Food', 'Grocery shopping'
+WHERE EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Food');
+INSERT INTO "Expense" ("Email", "Amount", "Date", "CategoryName", "Description") 
+SELECT 'example@example.com', 60.75, '2025-01-06 10:00:00', 'Transport', 'Bus ticket'
+WHERE EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Transport');
 
--- Saving Goals
-INSERT INTO public."SavingGoal" ("GoalID", "Email", "Amount", "SavedAmount", "TargetDate", "Description") VALUES
-(1, 'example@example.com', 10000.00, 2000.00, '2024-12-31', 'Vacation fund'),
-(2, 'testuser1@example.com', 5000.00, 1500.00, '2024-06-30', 'New laptop'),
-(3, 'testuser2@example.com', 8000.00, 3000.00, '2024-09-30', 'Home renovation');
+-- Create Income table
+CREATE TABLE "Income" (
+  "IncomeID" SERIAL PRIMARY KEY,  
+  "Email" VARCHAR(255) NOT NULL,  
+  "Amount" FLOAT NOT NULL,       
+  "Date" TIMESTAMP NOT NULL,     
+  "CategoryName" VARCHAR(255) NOT NULL,  
+  "Description" VARCHAR(255),    
+  CONSTRAINT "FK_Income_User" FOREIGN KEY ("Email") REFERENCES "User"("Email"),  
+  CONSTRAINT "FK_Income_Category" FOREIGN KEY ("CategoryName") REFERENCES "Category"("CategoryName")  
+);
+
+-- Insert sample data into Income table (use existing "example@example.com")
+INSERT INTO "Income" ("Email", "Amount", "Date", "CategoryName", "Description") 
+SELECT 'example@example.com', 2000.00, '2025-01-01 09:00:00', 'Salary', 'Monthly salary'
+WHERE EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Salary');
+INSERT INTO "Income" ("Email", "Amount", "Date", "CategoryName", "Description") 
+SELECT 'example@example.com', 1200.00, '2025-01-01 09:00:00', 'Salary', 'Monthly salary'
+WHERE EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Salary');
+
+-- Create SavingGoal table
+CREATE TABLE "SavingGoal" (
+  "GoalID" SERIAL PRIMARY KEY,  
+  "Email" VARCHAR(255) NOT NULL,  
+  "Amount" FLOAT NOT NULL,       
+  "SavedAmount" FLOAT NOT NULL,  
+  "TargetDate" TIMESTAMP NOT NULL,  
+  "Description" VARCHAR(255),    
+  CONSTRAINT "FK_SavingGoal_User" FOREIGN KEY ("Email") REFERENCES "User"("Email")  
+);
+
+-- Insert sample data into SavingGoal table (use existing "example@example.com")
+INSERT INTO "SavingGoal" ("Email", "Amount", "SavedAmount", "TargetDate", "Description") 
+SELECT 'example@example.com', 5000.00, 500.00, '2025-12-31', 'Vacation fund'
+WHERE EXISTS (SELECT 1 FROM "User" WHERE "Email" = 'example@example.com');
+INSERT INTO "SavingGoal" ("Email", "Amount", "SavedAmount", "TargetDate", "Description") 
+SELECT 'example@example.com', 3000.00, 1000.00, '2025-06-30', 'Emergency savings'
+WHERE EXISTS (SELECT 1 FROM "User" WHERE "Email" = 'example@example.com');
+
+-- Create MonthlyBudget table
+CREATE TABLE "MonthlyBudget" (
+  "BudgetID" SERIAL PRIMARY KEY,  
+  "Email" VARCHAR(255) NOT NULL,  
+  "CategoryName" VARCHAR(255) NOT NULL,  
+  "BudgetAmount" FLOAT NOT NULL,       
+  "SpentAmount" FLOAT NOT NULL,        
+  "BudgetMonth" TIMESTAMP NOT NULL,    
+  CONSTRAINT "FK_MonthlyBudget_User" FOREIGN KEY ("Email") REFERENCES "User"("Email"),  
+  CONSTRAINT "FK_MonthlyBudget_Category" FOREIGN KEY ("CategoryName") REFERENCES "Category"("CategoryName")  
+);
+
+-- Insert sample data into MonthlyBudget table (use existing "example@example.com")
+INSERT INTO "MonthlyBudget" ("Email", "CategoryName", "BudgetAmount", "SpentAmount", "BudgetMonth") 
+SELECT 'example@example.com', 'Food', 200.00, 150.50, '2025-01-01'
+WHERE EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Food');
+INSERT INTO "MonthlyBudget" ("Email", "CategoryName", "BudgetAmount", "SpentAmount", "BudgetMonth") 
+SELECT 'example@example.com', 'Transport', 100.00, 60.75, '2025-01-01'
+WHERE EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Transport');
+
+-- Create Analytics table
+CREATE TABLE "Analytics" (
+  "AnalyticsID" SERIAL PRIMARY KEY,  
+  "CategoryName" VARCHAR(255) NOT NULL,  
+  "Metric" VARCHAR(255) NOT NULL,   
+  "Value" FLOAT NOT NULL,           
+  "Date" TIMESTAMP NOT NULL,        
+  "Email" VARCHAR(255) NOT NULL,    
+  CONSTRAINT "FK_Analytics_User" FOREIGN KEY ("Email") REFERENCES "User"("Email"),  
+  CONSTRAINT "FK_Analytics_Category" FOREIGN KEY ("CategoryName") REFERENCES "Category"("CategoryName")  
+);
+
+-- Insert sample data into Analytics table (use existing "example@example.com")
+INSERT INTO "Analytics" ("CategoryName", "Metric", "Value", "Date", "Email") 
+SELECT 'Food', 'Average Spending', 150.50, '2025-01-05', 'example@example.com'
+WHERE EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Food');
+INSERT INTO "Analytics" ("CategoryName", "Metric", "Value", "Date", "Email") 
+SELECT 'Transport', 'Average Spending', 60.75, '2025-01-06', 'example@example.com'
+WHERE EXISTS (SELECT 1 FROM "Category" WHERE "CategoryName" = 'Transport');

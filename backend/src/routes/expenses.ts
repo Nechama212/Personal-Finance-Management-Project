@@ -6,7 +6,8 @@ import {
     createExpense,
     updateExpenseById,
     deleteExpenseById
-  } from '../controllers/expenseController';
+} from '../controllers/expenseController';
+
 const router = Router();
 
 router.get('/:email', getAllExpensesByEmail);
@@ -17,6 +18,3 @@ router.put('/:id', updateExpenseById);
 router.delete('/:id', deleteExpenseById);
 
 export { router as expensesRouter };
-
-
-

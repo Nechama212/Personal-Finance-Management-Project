@@ -7,7 +7,10 @@ const prisma = new PrismaClient();
 const getAllExpensesByEmail = async (req: Request, res: Response): Promise<void> => {
   try {
     const expenses = await prisma.expense.findMany({
-      where: { Email: req.params.email }
+      where: { Email: req.params.email },
+      include: {
+        Category: true, // כלול את הקטגוריה בהוצאה
+      },
     });
     res.json(expenses);
   } catch (error) {
