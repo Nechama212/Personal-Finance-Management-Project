@@ -20,6 +20,9 @@ h1 {
   background: white; /* Background color of the container */
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for container */
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  gap: 20px; /* Space between form and tables */
 }
 
 button {
@@ -37,10 +40,17 @@ button:hover {
   background-color: #0056b3; /* Button hover background color */
 }
 
+.tables-container {
+  display: flex;
+  justify-content: space-between; /* Space between the two tables */
+  gap: 20px; /* Space between the tables */
+}
+
 table {
-  width: 100%;
+  width: 550px !important;
+  table-layout: fixed;
   border-collapse: collapse;
-  margin-bottom: 40px; /* Space between tables */
+  margin-bottom: 10px;
 }
 
 th, td {
@@ -48,6 +58,7 @@ th, td {
   text-align: left;
   font-size: 12px; /* Font size for table cells */
   border: none; /* Remove borders from table cells */
+  height: 50px; /* Ensures consistent row height */
 }
 
 th {

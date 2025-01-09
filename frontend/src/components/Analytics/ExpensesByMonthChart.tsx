@@ -3,19 +3,17 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,  // Added Bar Element for Bar Chart
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,  // Register Bar Element for Bar Chart
   Title,
   Tooltip,
   Legend
@@ -24,13 +22,26 @@ ChartJS.register(
 const ExpensesByMonthChart: React.FC<{ monthlyExpenses: Array<any> }> = ({ monthlyExpenses }) => {
   console.log("Monthly Expenses data:", monthlyExpenses);
 
-  // Prepare data for the chart
+  // Extract unique months and their corresponding expense amounts
+  const monthsData = monthlyExpenses.reduce((acc: any, expense) => {
+    const month = new Date(expense.Date).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    if (!acc[month]) {
+      acc[month] = 0;
+    }
+    acc[month] += expense.Amount;
+    return acc;
+  }, {});
+
+  // Prepare labels and data for the Bar chart
+  const labels = Object.keys(monthsData);  // Unique months
   const data = {
-    labels: monthlyExpenses.map(expense => new Date(expense.Date).toLocaleString('he-IL', { month: 'long' })),
+    labels: labels,  // Month names in English (unique months)
     datasets: [{
-      data: monthlyExpenses.map(expense => expense.Amount),
-      borderColor: '#36A2EB',
-      fill: false,
+      label: 'Expenses Amount',  // Label for the chart
+      data: labels.map(month => monthsData[month]),  // Total expense amount for each unique month
+      backgroundColor: '#36A2EB',  // Color for the bars
+      borderColor: '#36A2EB',  // Border color for the bars
+      borderWidth: 1,  // Border width for the bars
     }],
   };
 
@@ -39,7 +50,7 @@ const ExpensesByMonthChart: React.FC<{ monthlyExpenses: Array<any> }> = ({ month
   return (
     <div className="expenses-by-month-chart">
       <h2>Expenses by Month</h2>
-      <Line data={data} />
+      <Bar data={data} /> {/* Render Bar Chart */}
     </div>
   );
 };

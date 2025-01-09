@@ -1,7 +1,9 @@
 import React from 'react';
 import Transactions from './components/Transactions/Transactions'; // Path to your Transactions component
 import MonthlyBudget from './components/MonthlyBudget/MonthlyBudget'; // Path to your MonthlyBudget component
-import Analytics from './components/Analytics/Analytics'; 
+import Analytics from './components/Analytics/Analytics';
+
+import './styles.css'; 
 const App: React.FC = () => {
   return (
     <div className="container">

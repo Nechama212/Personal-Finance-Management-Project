@@ -32,6 +32,17 @@ const Transactions: React.FC = () => {
     }
   }, [email]);
 
+  const formatDate = (date: string | Date) => {
+    const d = new Date(date);
+    // Check if the date is valid
+    if (isNaN(d.getTime())) {
+      console.error("Invalid date value:", date);
+      return '';
+    }
+    // Ensure the date is in ISO format "yyyy-MM-dd"
+    return d.toISOString().split('T')[0]; // Only return the date part in "yyyy-MM-dd" format
+  };
+
   const addCategory = async (categoryName: string, type: 'expense' | 'income') => {
     const endpoint = type === 'expense' ? '/api/categories/expense' : '/api/categories/income';
 
@@ -67,7 +78,13 @@ const Transactions: React.FC = () => {
       const completeExpense = {
         ...expense,
         Email: email, // Use current email state
+        Date: formatDate(expense.Date), // Format date to "yyyy-MM-dd"
       };
+
+      if (!completeExpense.Date) {
+        console.error("Invalid date for expense:", completeExpense);
+        return;
+      }
 
       console.log("Updating Expense Data:", completeExpense);
 
@@ -108,14 +125,15 @@ const Transactions: React.FC = () => {
     try {
       console.log("New Expense Data:", newExpense);
       if (!newExpense.Date || isNaN(new Date(newExpense.Date).getTime())) {
-        throw new RangeError("Invalid time value");
+        console.error("Invalid date for expense:", newExpense.Date);
+        return;
       }
 
       const completeExpense = {
         ...newExpense,
         Email: email, // Use current email state
         Amount: parseFloat(newExpense.Amount as any), // Ensure amount is a number
-        Date: new Date(newExpense.Date).toISOString(), // Update date format to ISO-8601
+        Date: formatDate(newExpense.Date), // Format date to "yyyy-MM-dd"
       };
 
       console.log("Creating expense:", completeExpense);
@@ -147,7 +165,13 @@ const Transactions: React.FC = () => {
       const completeIncome = {
         ...income,
         Email: email, // Use current email state
+        Date: formatDate(income.Date), // Format date to "yyyy-MM-dd"
       };
+
+      if (!completeIncome.Date) {
+        console.error("Invalid date for income:", completeIncome);
+        return;
+      }
 
       const response = await fetch(`/api/incomes/${completeIncome.IncomeID}`, {
         method: 'PUT',
@@ -179,14 +203,15 @@ const Transactions: React.FC = () => {
     try {
       console.log("New Income Data:", newIncome);
       if (!newIncome.Date || isNaN(new Date(newIncome.Date).getTime())) {
-        throw new RangeError("Invalid time value");
+        console.error("Invalid date for income:", newIncome.Date);
+        return;
       }
 
       const completeIncome = {
         ...newIncome,
         Email: email, // Use current email state
         Amount: parseFloat(newIncome.Amount as any), // Ensure amount is a number
-        Date: new Date(newIncome.Date).toISOString(), // Update date format to ISO-8601
+        Date: formatDate(newIncome.Date), // Format date to "yyyy-MM-dd"
       };
 
       console.log("Creating income:", completeIncome);

@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { format } from 'date-fns';
-import CategorySelector from '../MonthlyBudget/CategorySelector'; // Import CategorySelector
-import { Expense, Category } from './TransactionsTypes';
+import CategorySelector from '../MonthlyBudget/CategorySelector';
+import { Expense } from './TransactionsTypes';
+import UploadExpenses from '../UploadExcel/UploadExpenses';
 
 const Expenses: React.FC<{ 
   expenses: Expense[], 
@@ -12,14 +13,14 @@ const Expenses: React.FC<{
   categories: string[],
   userEmail: string
 }> = ({ expenses, updateExpense, deleteExpense, createExpense, addCategory, categories, userEmail }) => {
-  const [newExpense, setNewExpense] = useState<Omit<Expense, 'ExpenseID'>>({ Description: '', Amount: 0, Date: '', CategoryName: '' });
+  const [newExpense, setNewExpense] = useState<Omit<Expense, 'ExpenseID'>>({ Description: '', Amount: 0, Date: '', CategoryName: '', UserEmail: userEmail });
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [newCategory, setNewCategory] = useState('');
-  const [showForm, setShowForm] = useState(false); // state to show/hide form
-  const [showAddCategory, setShowAddCategory] = useState(false); // Show add category form
+  const [showForm, setShowForm] = useState(false);
+  const [showAddCategory, setShowAddCategory] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [expenseCategories, setExpenseCategories] = useState<string[]>(categories); // Add setExpenseCategories
+  const [expenseCategories, setExpenseCategories] = useState<string[]>(categories);
 
   useEffect(() => {
     if (userEmail) {
@@ -61,14 +62,14 @@ const Expenses: React.FC<{
 
       setError(null);
       createExpense({ ...newExpense, CategoryName: selectedCategory || newExpense.CategoryName });
-      setNewExpense({ Description: '', Amount: 0, Date: '', CategoryName: '' });
+      setNewExpense({ Description: '', Amount: 0, Date: '', CategoryName: '', UserEmail: userEmail });
     }
-    setShowForm(false); // Close the form after submission
+    setShowForm(false);
   };
 
   const startEditing = (expense: Expense) => {
     setEditingExpense(expense);
-    setShowForm(true); // Show form when editing an expense
+    setShowForm(true);
   };
 
   const handleCategorySelect = (category: string) => {
@@ -109,41 +110,53 @@ const Expenses: React.FC<{
   };
 
   const totalExpenses = useMemo(() => expenses.reduce((acc, expense) => acc + expense.Amount, 0), [expenses]);
+  const formattedTotalExpenses = (Math.round(totalExpenses * 100) / 100).toFixed(2);
 
   return (
     <div>
       <h2>Expenses</h2>
       <button onClick={() => setShowForm(true)}>Add Expense</button>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {expenses.map(expense => (
-            <tr key={expense.ExpenseID}>
-              <td>{format(new Date(expense.Date), 'dd-MM-yyyy')}</td>
-              <td>{expense.Description}</td>
-              <td>₪{expense.Amount}</td>
-              <td>{expense.CategoryName}</td>
-              <td>
-                <button onClick={() => startEditing(expense)}>Update</button>
-                <button onClick={() => deleteExpense(expense.ExpenseID)}>Delete</button>
-              </td>
+      
+      <div
+        style={{
+          overflowY: 'auto', // Ensure scrolling happens
+          maxHeight: '400px', // Ensure table content is scrollable
+        }}
+      >
+        <table style={{ width: '100px', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Category</th>
+              <th>Actions</th>
             </tr>
-          ))}
-          <tr>
-            <td colSpan={2}><strong>Total</strong></td>
-            <td><strong>₪{totalExpenses}</strong></td>
-            <td colSpan={2}></td>
-          </tr>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {expenses.map(expense => (
+              <tr key={expense.ExpenseID}>
+                <td>{format(new Date(expense.Date), 'dd-MM-yyyy')}</td>
+                <td>{expense.Description}</td>
+                <td>₪{expense.Amount}</td>
+                <td>{expense.CategoryName}</td>
+                <td>
+                  <button onClick={() => startEditing(expense)}>Update</button>
+                  <button onClick={() => deleteExpense(expense.ExpenseID)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+            <tr>
+              <td colSpan={2}><strong>Total</strong></td>
+              <td><strong>₪{formattedTotalExpenses}</strong></td>
+              <td colSpan={2}></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <UploadExpenses userEmail={userEmail} createExpense={createExpense} />
+
       {showForm && (
         <form onSubmit={handleSubmit}>
           <h3>{editingExpense ? 'Update Expense' : 'Create Expense'}</h3>

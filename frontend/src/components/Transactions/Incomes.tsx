@@ -3,7 +3,6 @@ import { format } from 'date-fns';
 import CategorySelector from '../MonthlyBudget/CategorySelector'; // Import CategorySelector
 import { Income, Category } from './TransactionsTypes';
 
-
 const Incomes: React.FC<{ 
   incomes: Income[], 
   updateIncome: (income: Income) => void, 
@@ -13,7 +12,7 @@ const Incomes: React.FC<{
   categories: string[],
   userEmail: string
 }> = ({ incomes, updateIncome, deleteIncome, createIncome, addCategory, categories, userEmail }) => {
-  const [newIncome, setNewIncome] = useState<Omit<Income, 'IncomeID'>>({ Description: '', Amount: 0, Date: '', CategoryName: '' });
+  const [newIncome, setNewIncome] = useState<Omit<Income, 'IncomeID'>>({ Description: '', Amount: 0, Date: '', CategoryName: '', UserEmail: userEmail });
   const [editingIncome, setEditingIncome] = useState<Income | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [newCategory, setNewCategory] = useState('');
@@ -62,7 +61,7 @@ const Incomes: React.FC<{
 
       setError(null);
       createIncome({ ...newIncome, CategoryName: selectedCategory || newIncome.CategoryName });
-      setNewIncome({ Description: '', Amount: 0, Date: '', CategoryName: '' });
+      setNewIncome({ Description: '', Amount: 0, Date: '', CategoryName: '', UserEmail: userEmail });
     }
     setShowForm(false); // Close the form after submission
   };
@@ -110,41 +109,50 @@ const Incomes: React.FC<{
   };
 
   const totalIncomes = useMemo(() => incomes.reduce((acc, income) => acc + income.Amount, 0), [incomes]);
+  const formattedTotalIncomes = totalIncomes.toFixed(2); // Format to 2 decimal places
 
   return (
     <div>
       <h2>Incomes</h2>
       <button onClick={() => setShowForm(true)}>Add Income</button>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {incomes.map(income => (
-            <tr key={income.IncomeID}>
-              <td>{format(new Date(income.Date), 'dd-MM-yyyy')}</td>
-              <td>{income.Description}</td>
-              <td>₪{income.Amount}</td>
-              <td>{income.CategoryName}</td>
-              <td>
-                <button onClick={() => startEditing(income)}>Update</button>
-                <button onClick={() => deleteIncome(income.IncomeID)}>Delete</button>
-              </td>
+      {/* Scrollable table with adjusted height */}
+      <div
+        style={{
+          overflowY: incomes.length > 10 ? 'auto' : 'visible',
+          maxHeight: '400px', // Adjusted height to match Expenses table
+        }}
+      >
+        <table style={{ width: '300px', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>Category</th>
+              <th>Actions</th>
             </tr>
-          ))}
-          <tr>
-            <td colSpan={2}><strong>Total</strong></td>
-            <td><strong>₪{totalIncomes}</strong></td>
-            <td colSpan={2}></td>
-          </tr>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {incomes.map(income => (
+              <tr key={income.IncomeID}>
+                <td>{format(new Date(income.Date), 'dd-MM-yyyy')}</td>
+                <td>{income.Description}</td>
+                <td>₪{income.Amount}</td>
+                <td>{income.CategoryName}</td>
+                <td>
+                  <button onClick={() => startEditing(income)}>Update</button>
+                  <button onClick={() => deleteIncome(income.IncomeID)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+            <tr>
+              <td colSpan={2}><strong>Total</strong></td>
+              <td><strong>₪{totalIncomes}</strong></td>
+              <td colSpan={2}></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       {showForm && (
         <form onSubmit={handleSubmit}>
           <h3>{editingIncome ? 'Update Income' : 'Create Income'}</h3>

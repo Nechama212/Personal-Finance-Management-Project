@@ -1,0 +1,109 @@
+/* Container for the entire Analytics page */
+.analytics-container {
+  width: 100%;
+  max-width: 1200px; /* Set a maximum width */
+  margin: 0 auto; /* Center the content horizontally */
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Heading style for the main title */
+.analytics-container h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+/* Styling for the email input field */
+#emailInput {
+  display: block;
+  width: 100%;
+  max-width: 400px; /* Restrict maximum width */
+  margin: 0 auto 30px; /* Center and add spacing */
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Container for summary section (expenses, incomes, savings/deficit) */
+.summary-container {
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+  gap: 20px; /* Space between items */
+  margin-top: 40px;
+}
+
+/* Box style for displaying totals and savings/deficit */
+.summary-box {
+  padding: 20px;
+  background-color: #e0f7fa; /* Light blue background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow */
+  font-size: 1.25rem;
+  color: #00796b; /* Dark green text */
+  text-align: center;
+}
+
+/* Paragraph styling inside summary boxes */
+.summary-box p {
+  margin: 10px 0;
+}
+
+/* Container for charts - display side-by-side */
+.charts-container {
+  display: flex;
+  gap: 20px; /* Space between charts */
+  margin-top: 40px;
+}
+
+/* Individual chart styling */
+.chart {
+  flex: 1; /* Equal width for both charts */
+  padding: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Pie chart container with fixed size */
+.expenses-by-category-chart {
+  max-width: 400px; /* Limit width */
+  max-height: 400px; /* Limit height */
+  margin: 0 auto; /* Center the chart */
+}
+
+/* Canvas inside Pie chart */
+.expenses-by-category-chart canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 400px; /* Max width for chart */
+  max-height: 400px; /* Max height for chart */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .analytics-container {
+    padding: 15px;
+  }
+
+  .analytics-container h1 {
+    font-size: 2rem; /* Smaller font size */
+  }
+
+  #emailInput {
+    max-width: 100%;
+  }
+
+  .summary-container {
+    flex-direction: column; /* Stack summary vertically */
+  }
+
+  .charts-container {
+    flex-direction: column; /* Stack charts vertically */
+  }
+
+  .expenses-by-category-chart {
+    max-width: 300px; /* Smaller max width for small screens */
+    max-height: 300px; /* Smaller max height for small screens */
+  }
+}

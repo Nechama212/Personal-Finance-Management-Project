@@ -2,44 +2,71 @@ import React from 'react';
 import {
   Chart as ChartJS,
   ArcElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
   Tooltip,
   Legend,
 } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 
-ChartJS.register(
-  ArcElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+// Register required components for Chart.js
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-const ExpensesByCategoryChart: React.FC<{ expensesByCategory: Array<any> }> = ({ expensesByCategory }) => {
-  console.log("Expenses by Category data:", expensesByCategory); 
+// Define props interface for the component
+interface Props {
+  expensesByCategory: Array<{
+    CategoryName: string;
+    Amount: number;
+  }>;
+}
 
+// Functional component for Pie Chart visualization
+const ExpensesByCategoryChart: React.FC<Props> = ({ expensesByCategory }) => {
+  console.log('Expenses by Category data:', expensesByCategory); // Debugging log
+
+  // Combine categories with the same name by summing their amounts
+  const combinedData = expensesByCategory.reduce((acc, { CategoryName, Amount }) => {
+    // Check if the category already exists in the accumulator
+    if (acc[CategoryName]) {
+      acc[CategoryName] += Amount; // Add to existing amount
+    } else {
+      acc[CategoryName] = Amount; // Create new category entry
+    }
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Prepare data for the Pie Chart from combined data
   const data = {
-    labels: expensesByCategory.map(expense => expense.CategoryName),
-    datasets: [{
-      data: expensesByCategory.map(expense => expense.Amount),
-      backgroundColor: [
-        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
-      ], 
-    }],
+    labels: Object.keys(combinedData), // Categories as labels
+    datasets: [
+      {
+        data: Object.values(combinedData), // Amounts as data
+        backgroundColor: [
+          '#FF6384', // Red
+          '#36A2EB', // Blue
+          '#FFCE56', // Yellow
+          '#4BC0C0', // Teal
+          '#9966FF', // Purple
+          '#FF9F40', // Orange
+        ],
+      },
+    ],
+  };
+
+  // Explicitly define options with the correct type for Pie Chart
+  const options: import('chart.js').ChartOptions<'pie'> = {
+    responsive: true, // Allow responsiveness
+    maintainAspectRatio: false, // Disable aspect ratio to control size
+    plugins: {
+      legend: {
+        position: 'bottom', // Place legend at the bottom
+      },
+    },
   };
 
   return (
     <div className="expenses-by-category-chart">
       <h2>Expenses by Category</h2>
-      <Pie data={data} />
+      {/* Render Pie Chart */}
+      <Pie data={data} options={options} />
     </div>
   );
 };
