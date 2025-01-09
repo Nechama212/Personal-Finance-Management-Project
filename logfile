@@ -1,0 +1,295 @@
+2025-01-06 23:18:15.014 EET [8462] LOG:  starting PostgreSQL 14.15 (Homebrew) on aarch64-apple-darwin23.6.0, compiled by Apple clang version 16.0.0 (clang-1600.0.26.4), 64-bit
+2025-01-06 23:18:15.014 EET [8462] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-01-06 23:18:15.014 EET [8462] LOG:  listening on IPv6 address "::1", port 5432
+2025-01-06 23:18:15.015 EET [8462] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-01-06 23:18:15.017 EET [8463] LOG:  database system was shut down at 2025-01-06 23:18:13 EET
+2025-01-06 23:18:15.019 EET [8462] LOG:  database system is ready to accept connections
+2025-01-06 23:18:21.590 EET [8472] FATAL:  role "postgres" does not exist
+2025-01-06 23:18:46.096 EET [8491] FATAL:  database "nechama" does not exist
+2025-01-06 23:18:56.269 EET [8496] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:56.809 EET [8518] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:56.817 EET [8519] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:57.397 EET [8520] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:57.407 EET [8521] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:57.640 EET [8522] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:57.647 EET [8523] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:57.860 EET [8524] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:57.867 EET [8525] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:58.074 EET [8526] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:58.081 EET [8527] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:58.288 EET [8528] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:19:58.295 EET [8529] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:20:23.921 EET [8561] FATAL:  role "postgres" does not exist
+2025-01-06 23:20:49.149 EET [8574] FATAL:  role "postgres" does not exist
+2025-01-06 23:21:17.305 EET [8586] FATAL:  database "nechama" does not exist
+2025-01-06 23:21:23.403 EET [8588] FATAL:  role "nechamachen" does not exist
+2025-01-06 23:23:15.020 EET [8464] ERROR:  could not open directory "pg_logical/snapshots": No such file or directory
+2025-01-06 23:23:15.084 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:15.780 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:15.780 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:16.022 EET [8464] ERROR:  could not open directory "pg_logical/snapshots": No such file or directory
+2025-01-06 23:23:16.476 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:16.476 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:17.023 EET [8464] ERROR:  could not open directory "pg_logical/snapshots": No such file or directory
+2025-01-06 23:23:17.175 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:17.176 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:17.874 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:17.874 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:18.025 EET [8464] ERROR:  could not open directory "pg_logical/snapshots": No such file or directory
+2025-01-06 23:23:18.576 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:18.577 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:19.026 EET [8464] ERROR:  could not open directory "pg_logical/snapshots": No such file or directory
+2025-01-06 23:23:19.276 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:19.276 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:19.979 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:19.979 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:20.028 EET [8464] ERROR:  could not open directory "pg_logical/snapshots": No such file or directory
+2025-01-06 23:23:20.679 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:20.679 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:21.029 EET [8464] ERROR:  could not open directory "pg_logical/snapshots": No such file or directory
+2025-01-06 23:23:21.377 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:21.377 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:22.029 EET [8464] ERROR:  could not open directory "pg_logical/snapshots": No such file or directory
+2025-01-06 23:23:22.072 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:22.072 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:22.781 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:22.781 EET [8468] LOG:  could not open temporary statistics file "pg_stat_tmp/global.tmp": No such file or directory
+2025-01-06 23:23:23.031 EET [8464] ERROR:  could not open directory "pg_logical/snapshots": No such file or directory
+2025-01-06 23:23:23.410 EET [8462] LOG:  could not open file "postmaster.pid": No such file or directory
+2025-01-06 23:23:23.410 EET [8462] LOG:  performing immediate shutdown because data directory lock file is invalid
+2025-01-06 23:23:23.410 EET [8462] LOG:  received immediate shutdown request
+2025-01-06 23:23:23.410 EET [8462] LOG:  could not open file "postmaster.pid": No such file or directory
+2025-01-06 23:23:23.414 EET [8468] LOG:  could not open temporary statistics file "pg_stat/global.tmp": No such file or directory
+2025-01-06 23:23:23.417 EET [8462] LOG:  database system is shut down
+2025-01-06 23:28:16.996 EET [12006] LOG:  starting PostgreSQL 14.15 (Homebrew) on aarch64-apple-darwin23.6.0, compiled by Apple clang version 16.0.0 (clang-1600.0.26.4), 64-bit
+2025-01-06 23:28:16.998 EET [12006] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-01-06 23:28:16.998 EET [12006] LOG:  listening on IPv6 address "::1", port 5432
+2025-01-06 23:28:16.998 EET [12006] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-01-06 23:28:17.001 EET [12007] LOG:  database system was shut down at 2025-01-06 23:23:45 EET
+2025-01-06 23:28:17.003 EET [12006] LOG:  database system is ready to accept connections
+2025-01-06 23:28:49.157 EET [12260] FATAL:  database "nechama" does not exist
+2025-01-06 23:29:06.210 EET [12264] FATAL:  role "postgres" does not exist
+2025-01-06 23:31:42.182 EET [13579] ERROR:  relation "public.Expense" does not exist at character 611
+2025-01-06 23:31:42.182 EET [13579] STATEMENT:  ---------------------------------------------------------------------------------
+	-- Fetch OID, Comment, Tablespace, and View Definition (if applicable) ----------
+	---------------------------------------------------------------------------------
+	SELECT
+		pg_class.oid,
+		obj_description(pg_class.oid, 'pg_class') AS comment,
+		COALESCE(spcname, (select spcname from pg_tablespace, pg_database where pg_tablespace.oid=dattablespace and datname='mydatabase')) as tablespace,
+		pg_get_viewdef(pg_class.oid,true) AS viewdef
+	FROM pg_class
+	LEFT JOIN pg_tablespace ON pg_tablespace.oid=reltablespace
+	WHERE pg_class.oid = '"public"."Expense"'::regclass::oid AND relkind='r';
+	
+	---------------------------------------------------------------------------------
+	-- Fetch Column Information -----------------------------------------------------
+	---------------------------------------------------------------------------------
+	SELECT 
+		attnum,
+		attname,
+		atttypid,
+		attnotnull,
+		format_type(atttypid,atttypmod),
+		pg_get_expr(adbin, attrelid, true) AS adsrc,
+		col_description(attrelid, attnum),
+		typcategory,
+		has_column_privilege(attrelid,attnum,'SELECT'),
+		attgenerated,
+		attidentity,
+		(
+		SELECT row_to_json(s) FROM pg_sequence s
+		JOIN pg_depend d ON (d.classid='pg_class'::regclass AND s.seqrelid=d.objid)
+		WHERE d.refclassid='pg_class'::regclass AND d.refobjid=attrelid AND d.refobjsubid=attnum
+		LIMIT 1
+	)  AS sequence_options
+	
+	FROM pg_attribute
+	LEFT JOIN pg_type ON atttypid=pg_type.oid
+	LEFT JOIN pg_attrdef ON adrelid=attrelid AND adnum=attnum
+	WHERE attrelid = '"public"."Expense"'::regclass
+	  AND NOT attisdropped
+	
+	ORDER BY attnum;
+	
+	---------------------------------------------------------------------------------
+	-- Fetch Indexes ----------------------------------------------------------------
+	---------------------------------------------------------------------------------
+	SELECT
+		pg_class.oid,
+		pg_class.relname,
+		indisunique,
+		indisprimary,
+		indisexclusion,
+		indkey,
+		pg_get_indexdef(indexrelid, 0, true) AS definition,
+		ARRAY(select pg_get_indexdef(indexrelid, attnum, true) FROM pg_attribute WHERE attrelid = indexrelid ORDER BY attnum) AS expressions,
+		obj_description(pg_class.oid, 'pg_class') AS comment,
+		indoption,
+		ARRAY(SELECT pg_collation.collname FROM unnest(indcollation) AS t(colid) LEFT JOIN pg_collation ON pg_collation.oid = colid) AS collations,
+		ARRAY(SELECT pg_opclass.opcname FROM generate_series(0, indnatts-1) AS t(i) LEFT JOIN pg_opclass ON pg_opclass.oid = indclass[i]) AS opclasses, -- we need to use generate_series because unnest is not available on 8.0 / Redshift
+		pg_get_expr(indpred,indrelid, true),
+		amname,
+		false AS indnullsnotdistinct
+	FROM pg_index
+	LEFT JOIN pg_class ON pg_class.oid = indexrelid
+	LEFT JOIN pg_am ON pg_class.relam = pg_am.oid
+	WHERE indrelid = '"public"."Expense"'::regclass
+	ORDER BY pg_class.oid;
+	
+	---------------------------------------------------------------------------------
+	-- Fetch Constraints ------------------------------------------------------------
+	---------------------------------------------------------------------------------
+	SELECT
+		pg_constraint.oid,
+		conname,
+		contype,
+		conkey,
+		nspname AS fschema,
+		relname AS ftable,
+		confkey AS fkeys,
+		pg_get_expr(conbin, conrelid, true),
+		pg_get_constraintdef(pg_constraint.oid, true),
+		confupdtype,
+		confdeltype,
+		obj_description(pg_constraint.oid, 'pg_constraint'),
+		condeferrable,
+		condeferred,
+		connoinherit,
+		pg_extension.extname,
+		relkind AS ftablekind
+	FROM pg_constraint
+	LEFT JOIN pg_class ON pg_class.oid = confrelid
+	LEFT JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
+		LEFT JOIN pg_depend ON pg_depend.refclassid = 'pg_catalog.pg_extension'::regclass
+		AND pg_depend.classid = 'pg_catalog.pg_class'::regclass
+		AND pg_depend.objid = pg_class.oid
+		LEFT JOIN pg_extension ON pg_depend.refobjid = pg_extension.oid
+	WHERE conrelid = '"public"."Expense"'::regclass;
+	
+	---------------------------------------------------------------------------------
+	-- Fetch Values for ENUM types in the table  ------------------------------------
+	---------------------------------------------------------------------------------
+	SELECT
+		pg_type.oid,
+		ARRAY(
+			SELECT enumlabel
+			FROM pg_enum
+			WHERE enumtypid=pg_type.oid
+			ORDER BY enumsortorder
+		)
+	FROM pg_type
+	WHERE pg_type.oid IN (SELECT atttypid FROM pg_attribute WHERE attrelid = '"public"."Expense"'::regclass)
+	  AND typtype='e';
+2025-01-06 23:33:27.780 EET [13633] ERROR:  relation "public.Expense" does not exist at character 611
+2025-01-06 23:33:27.780 EET [13633] STATEMENT:  ---------------------------------------------------------------------------------
+	-- Fetch OID, Comment, Tablespace, and View Definition (if applicable) ----------
+	---------------------------------------------------------------------------------
+	SELECT
+		pg_class.oid,
+		obj_description(pg_class.oid, 'pg_class') AS comment,
+		COALESCE(spcname, (select spcname from pg_tablespace, pg_database where pg_tablespace.oid=dattablespace and datname='mydatabase')) as tablespace,
+		pg_get_viewdef(pg_class.oid,true) AS viewdef
+	FROM pg_class
+	LEFT JOIN pg_tablespace ON pg_tablespace.oid=reltablespace
+	WHERE pg_class.oid = '"public"."Expense"'::regclass::oid AND relkind='r';
+	
+	---------------------------------------------------------------------------------
+	-- Fetch Column Information -----------------------------------------------------
+	---------------------------------------------------------------------------------
+	SELECT 
+		attnum,
+		attname,
+		atttypid,
+		attnotnull,
+		format_type(atttypid,atttypmod),
+		pg_get_expr(adbin, attrelid, true) AS adsrc,
+		col_description(attrelid, attnum),
+		typcategory,
+		has_column_privilege(attrelid,attnum,'SELECT'),
+		attgenerated,
+		attidentity,
+		(
+		SELECT row_to_json(s) FROM pg_sequence s
+		JOIN pg_depend d ON (d.classid='pg_class'::regclass AND s.seqrelid=d.objid)
+		WHERE d.refclassid='pg_class'::regclass AND d.refobjid=attrelid AND d.refobjsubid=attnum
+		LIMIT 1
+	)  AS sequence_options
+	
+	FROM pg_attribute
+	LEFT JOIN pg_type ON atttypid=pg_type.oid
+	LEFT JOIN pg_attrdef ON adrelid=attrelid AND adnum=attnum
+	WHERE attrelid = '"public"."Expense"'::regclass
+	  AND NOT attisdropped
+	
+	ORDER BY attnum;
+	
+	---------------------------------------------------------------------------------
+	-- Fetch Indexes ----------------------------------------------------------------
+	---------------------------------------------------------------------------------
+	SELECT
+		pg_class.oid,
+		pg_class.relname,
+		indisunique,
+		indisprimary,
+		indisexclusion,
+		indkey,
+		pg_get_indexdef(indexrelid, 0, true) AS definition,
+		ARRAY(select pg_get_indexdef(indexrelid, attnum, true) FROM pg_attribute WHERE attrelid = indexrelid ORDER BY attnum) AS expressions,
+		obj_description(pg_class.oid, 'pg_class') AS comment,
+		indoption,
+		ARRAY(SELECT pg_collation.collname FROM unnest(indcollation) AS t(colid) LEFT JOIN pg_collation ON pg_collation.oid = colid) AS collations,
+		ARRAY(SELECT pg_opclass.opcname FROM generate_series(0, indnatts-1) AS t(i) LEFT JOIN pg_opclass ON pg_opclass.oid = indclass[i]) AS opclasses, -- we need to use generate_series because unnest is not available on 8.0 / Redshift
+		pg_get_expr(indpred,indrelid, true),
+		amname,
+		false AS indnullsnotdistinct
+	FROM pg_index
+	LEFT JOIN pg_class ON pg_class.oid = indexrelid
+	LEFT JOIN pg_am ON pg_class.relam = pg_am.oid
+	WHERE indrelid = '"public"."Expense"'::regclass
+	ORDER BY pg_class.oid;
+	
+	---------------------------------------------------------------------------------
+	-- Fetch Constraints ------------------------------------------------------------
+	---------------------------------------------------------------------------------
+	SELECT
+		pg_constraint.oid,
+		conname,
+		contype,
+		conkey,
+		nspname AS fschema,
+		relname AS ftable,
+		confkey AS fkeys,
+		pg_get_expr(conbin, conrelid, true),
+		pg_get_constraintdef(pg_constraint.oid, true),
+		confupdtype,
+		confdeltype,
+		obj_description(pg_constraint.oid, 'pg_constraint'),
+		condeferrable,
+		condeferred,
+		connoinherit,
+		pg_extension.extname,
+		relkind AS ftablekind
+	FROM pg_constraint
+	LEFT JOIN pg_class ON pg_class.oid = confrelid
+	LEFT JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
+		LEFT JOIN pg_depend ON pg_depend.refclassid = 'pg_catalog.pg_extension'::regclass
+		AND pg_depend.classid = 'pg_catalog.pg_class'::regclass
+		AND pg_depend.objid = pg_class.oid
+		LEFT JOIN pg_extension ON pg_depend.refobjid = pg_extension.oid
+	WHERE conrelid = '"public"."Expense"'::regclass;
+	
+	---------------------------------------------------------------------------------
+	-- Fetch Values for ENUM types in the table  ------------------------------------
+	---------------------------------------------------------------------------------
+	SELECT
+		pg_type.oid,
+		ARRAY(
+			SELECT enumlabel
+			FROM pg_enum
+			WHERE enumtypid=pg_type.oid
+			ORDER BY enumsortorder
+		)
+	FROM pg_type
+	WHERE pg_type.oid IN (SELECT atttypid FROM pg_attribute WHERE attrelid = '"public"."Expense"'::regclass)
+	  AND typtype='e';

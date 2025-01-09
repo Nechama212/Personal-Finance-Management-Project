@@ -11,8 +11,7 @@ const Expenses: React.FC<{
   createExpense: (newExpense: Omit<Expense, 'ExpenseID'>) => void, 
   addCategory: (categoryName: string) => void,
   categories: string[],
-  userEmail: string
-}> = ({ expenses, updateExpense, deleteExpense, createExpense, addCategory, categories, userEmail }) => {
+  userEmail: string }> = ({ expenses, updateExpense, deleteExpense, createExpense, addCategory, categories, userEmail }) => {
   const [newExpense, setNewExpense] = useState<Omit<Expense, 'ExpenseID'>>({ Description: '', Amount: 0, Date: '', CategoryName: '', UserEmail: userEmail });
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -24,8 +23,7 @@ const Expenses: React.FC<{
 
   useEffect(() => {
     if (userEmail) {
-      fetch(`/api/expenses/${userEmail}`)
-        .then(response => response.json())
+      fetch(`/api/expenses/${userEmail}`)        .then(response => response.json())
         .then((data: Expense[]) => {
           const categoryNames = [...new Set(data.map(expense => expense.CategoryName.toLowerCase()))];
           setExpenseCategories(categoryNames);
@@ -146,11 +144,11 @@ const Expenses: React.FC<{
                 </td>
               </tr>
             ))}
-            <tr>
-              <td colSpan={2}><strong>Total</strong></td>
-              <td><strong>₪{formattedTotalExpenses}</strong></td>
-              <td colSpan={2}></td>
-            </tr>
+                  <tr>
+        <td colSpan={2}><strong>Total</strong></td>
+  <td><strong>₪{formattedTotalExpenses}</strong></td>
+  <td colSpan={2}></td>
+</tr>
           </tbody>
         </table>
       </div>
