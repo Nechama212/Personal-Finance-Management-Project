@@ -15,4 +15,5 @@ router.post('/', createCategory); // Route to create a new category
 router.put('/:id', updateCategoryById); // Route to update a category by ID
 router.delete('/:id', deleteCategoryById); // Route to delete a category by ID
 
+
 export { router as categoriesRouter };
