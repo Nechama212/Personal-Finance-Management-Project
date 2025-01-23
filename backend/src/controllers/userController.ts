@@ -1,76 +1,160 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs'; // Import bcrypt for password hashing
+import { sendVerificationEmail } from '../services/emailService'; // Import the email service
 
 const prisma = new PrismaClient();
 
-export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+/**
+ * Retrieve all users from the database.
+ */
+const getAllUsers = async (req: Request, res: Response): Promise<Response> => {
   try {
     const users = await prisma.user.findMany();
-    res.status(200).json(users);
+    return res.status(200).json(users);
   } catch (error) {
-    res.status(400).json({ error: (error as Error).message });
+    console.error('Error fetching all users:', (error as Error).message);
+    return res.status(400).json({ error: (error as Error).message });
   }
 };
 
-export const getUserByEmail = async (req: Request, res: Response): Promise<void> => {
+/**
+ * Retrieve a specific user by email.
+ */
+const getUserByEmail = async (req: Request, res: Response): Promise<Response> => {
   try {
     console.log(`Fetching user with email: ${req.params.email}`);
     const user = await prisma.user.findUnique({
-      where: { Email: req.params.email }
+      where: { Email: req.params.email },
     });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
     console.log('User found:', user);
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
     console.error('Error fetching user:', (error as Error).message);
-    res.status(400).json({ error: (error as Error).message });
+    return res.status(400).json({ error: (error as Error).message });
   }
 };
 
-
-export const checkExistingUsers = async (req: Request, res: Response): Promise<void> => {
+/**
+ * Check and list all existing users.
+ */
+const checkExistingUsers = async (req: Request, res: Response): Promise<Response> => {
   try {
-    console.log('checkExistingUsers called');
+    console.log('Fetching all users...');
     const users = await prisma.user.findMany();
-    console.log('Users:', users); 
-    res.status(200).json(users);
+    console.log('Users:', users);
+    return res.status(200).json(users);
   } catch (error) {
-    console.error('Error fetching users:', (error as Error).message);
-    res.status(400).json({ error: (error as Error).message });
+    console.error('Error checking users:', (error as Error).message);
+    return res.status(400).json({ error: (error as Error).message });
   }
 };
 
-export const createUser = async (req: Request, res: Response): Promise<void> => {
+/**
+ * Create a new user and send a verification email.
+ */
+const createUser = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { Email, UserName, Password, Language } = req.body;
-    const newUser = await prisma.user.create({
-      data: { Email, UserName, Password, Language }
+
+    // Check if email is already registered
+    const existingUser = await prisma.user.findUnique({
+      where: { Email },
     });
-    res.status(201).json(newUser);
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email is already registered' });
+    }
+
+    // Hash the password before saving it in the database
+    const hashedPassword = await bcrypt.hash(Password, 10);
+
+    // Create a new user with emailVerified set to false
+    const newUser = await prisma.user.create({
+      data: { 
+        Email, 
+        UserName, 
+        Password: hashedPassword, // Store the hashed password
+        Language 
+      },
+    });
+
+    // Generate a verification link
+    const verificationLink = `http://your-app.com/verify-email?token=${newUser.Email}`;
+
+    // Send verification email
+    await sendVerificationEmail(newUser.Email, verificationLink);
+
+    console.log('Verification email sent to:', newUser.Email);
+    return res.status(201).json({ message: 'User created. Please verify your email.' });
   } catch (error) {
     console.error('Error creating user:', (error as Error).message);
-    res.status(400).json({ error: (error as Error).message });
+    return res.status(400).json({ error: (error as Error).message });
   }
 };
 
-export const updateUserDetails = async (req: Request, res: Response): Promise<void> => {
+/**
+ * Update user details.
+ */
+const updateUserDetails = async (req: Request, res: Response): Promise<Response> => {
   try {
     const updatedUser = await prisma.user.update({
       where: { Email: req.params.email },
-      data: req.body
+      data: req.body,
     });
-    res.status(200).json(updatedUser);
+    return res.status(200).json(updatedUser);
   } catch (error) {
-    res.status(400).json({ error: (error as Error).message });
+    console.error('Error updating user:', (error as Error).message);
+    return res.status(400).json({ error: (error as Error).message });
   }
 };
 
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+/**
+ * Delete a user by email.
+ */
+const deleteUser = async (req: Request, res: Response): Promise<Response> => {
   try {
     await prisma.user.delete({
-      where: { Email: req.params.email }
+      where: { Email: req.params.email },
     });
-    res.status(204).send();
+    return res.status(204).send();
   } catch (error) {
-    res.status(400).json({ error: (error as Error).message });
+    console.error('Error deleting user:', (error as Error).message);
+    return res.status(400).json({ error: (error as Error).message });
   }
+};
+
+/**
+ * Verify user email.
+ */
+const verifyEmail = async (req: Request, res: Response): Promise<Response> => {
+  const email = req.params.email;
+
+  try {
+    // Update the emailVerified field to true
+    const updatedUser = await prisma.user.update({
+      where: { Email: email },
+      data: { emailVerified: true },
+    });
+
+    return res.status(200).json({ message: 'Email verified successfully', user: updatedUser });
+  } catch (error) {
+    console.error('Error verifying email:', (error as Error).message);
+    return res.status(400).json({ error: (error as Error).message });
+  }
+};
+
+// Exporting functions for use in routes
+export {
+  getAllUsers,
+  getUserByEmail,
+  checkExistingUsers,
+  createUser,
+  updateUserDetails,
+  deleteUser,
+  verifyEmail
 };

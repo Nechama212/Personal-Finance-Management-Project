@@ -1,95 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model User {
+  Email          String   @id @unique
+  UserName       String
+  Password       String
+  Language       String
+  emailVerified  Boolean  @default(false) 
+  
+  analytics      Analytics[]
+  categories     Category[]
+  expenses       Expense[]
+  incomes        Income[]
+  monthlyBudgets MonthlyBudget[]
+  savingGoals    SavingGoal[]
 }
 
-model User {
-  Email         String @id @unique
-  UserName      String
-  Password      String
-  Language      String
-
-  expenses      Expense[]
-  incomes       Income[]
-  savingGoals   SavingGoal[]
-  monthlyBudgets MonthlyBudget[]
-  analytics     Analytics[]
-  categories    Category[]
-} 
-
 model Category {
-  CategoryID    Int     @id @default(autoincrement())
-  CategoryName  String  @unique
-  Email         String  @default("default@example.com")
-
-  expenses      Expense[]
-  incomes       Income[]
+  CategoryID     Int             @id @default(autoincrement())
+  CategoryName   String          @unique
+  Email          String          @default("default@example.com")
+  analytics      Analytics[]
+  User           User            @relation(fields: [Email], references: [Email])
+  expenses       Expense[]
+  incomes        Income[]
   monthlyBudgets MonthlyBudget[]
-  analytics     Analytics[]
-
-  User          User     @relation(fields: [Email], references: [Email])
 }
 
 model Expense {
-  ExpenseID     Int     @id @default(autoincrement())
-  Email         String
-  Amount        Float
-  Date          DateTime
-  CategoryName  String
-  Description   String?
+  ExpenseID    Int      @id @default(autoincrement())
+  Email        String
+  Amount       Float
+  Date         DateTime
+  CategoryName String
+  Description  String?
+  Category     Category @relation(fields: [CategoryName], references: [CategoryName])
+  User         User     @relation(fields: [Email], references: [Email])
 
   @@index([Email])
   @@index([CategoryName])
-
-  User          User     @relation(fields: [Email], references: [Email])
-  Category      Category @relation(fields: [CategoryName], references: [CategoryName])
 }
 
 model Income {
-  IncomeID      Int     @id @default(autoincrement())
-  Email         String
-  Amount        Float
-  Date          DateTime
-  CategoryName  String
-  Description   String?
+  IncomeID     Int      @id @default(autoincrement())
+  Email        String
+  Amount       Float
+  Date         DateTime
+  CategoryName String
+  Description  String?
+  Category     Category @relation(fields: [CategoryName], references: [CategoryName])
+  User         User     @relation(fields: [Email], references: [Email])
 
   @@index([Email])
   @@index([CategoryName])
-
-  User          User     @relation(fields: [Email], references: [Email])
-  Category      Category @relation(fields: [CategoryName], references: [CategoryName])
 }
 
 model SavingGoal {
-  GoalID        Int     @id @default(autoincrement())
-  Email         String
-  Amount        Float
-  SavedAmount   Float
-  TargetDate    DateTime
-  Description   String?
+  GoalID      Int      @id @default(autoincrement())
+  Email       String
+  Amount      Float
+  SavedAmount Float
+  TargetDate  DateTime
+  Description String?
+  User        User     @relation(fields: [Email], references: [Email])
 
   @@index([Email])
-
-  User          User     @relation(fields: [Email], references: [Email])
 }
 
 model MonthlyBudget {
-  BudgetID      Int     @id @default(autoincrement())
-  Email         String
-  CategoryName  String  
-  BudgetAmount  Float
-  SpentAmount   Float
-  BudgetMonth   DateTime
+  BudgetID     Int      @id @default(autoincrement())
+  Email        String
+  CategoryName String
+  BudgetAmount Float
+  SpentAmount  Float
+  BudgetMonth  DateTime
+  Category     Category @relation(fields: [CategoryName], references: [CategoryName])
+  User         User     @relation(fields: [Email], references: [Email])
 
   @@index([Email])
   @@index([CategoryName])
-
-  User          User     @relation(fields: [Email], references: [Email])
-  Category      Category @relation(fields: [CategoryName], references: [CategoryName])
 }
 
 model Analytics {
@@ -99,7 +94,7 @@ model Analytics {
   Value         Float
   Date          DateTime
   Email         String
-
+  emailVerified Boolean  @default(false)
+  Category      Category @relation(fields: [CategoryName], references: [CategoryName])
   User          User     @relation(fields: [Email], references: [Email])
-  Category      Category  @relation(fields: [CategoryName], references: [CategoryName])
 }
