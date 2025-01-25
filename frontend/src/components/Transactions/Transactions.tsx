@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Expenses from './Expenses';
 import Incomes from './Incomes';
-import { Expense, Income, Category } from './TransactionsTypes'; // Import interfaces from TransactionsTypes
+import { Expense, Income } from './TransactionsTypes'; // Import interfaces from TransactionsTypes
+import { useUser } from '../../context/UserContext'; // Import the User context
 
 const Transactions: React.FC = () => {
-  const [email, setEmail] = useState("example@example.com");
+  const { email } = useUser(); // Get email from context
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [expenseCategories, setExpenseCategories] = useState<string[]>([]);
   const [incomeCategories, setIncomeCategories] = useState<string[]>([]);
 
+  // Fetch data when the email is available
   useEffect(() => {
     if (email) {
+      // Fetch expenses
       fetch(`/api/expenses/${email}`)
         .then(response => response.json())
         .then((data: Expense[]) => {
@@ -21,6 +24,7 @@ const Transactions: React.FC = () => {
         })
         .catch(error => console.error('Error fetching expenses:', error));
 
+      // Fetch incomes
       fetch(`/api/incomes/${email}`)
         .then(response => response.json())
         .then((data: Income[]) => {
@@ -34,13 +38,11 @@ const Transactions: React.FC = () => {
 
   const formatDate = (date: string | Date) => {
     const d = new Date(date);
-    // Check if the date is valid
     if (isNaN(d.getTime())) {
       console.error("Invalid date value:", date);
       return '';
     }
-    // Ensure the date is in ISO format "yyyy-MM-dd"
-    return d.toISOString().split('T')[0]; // Only return the date part in "yyyy-MM-dd" format
+    return d.toISOString().split('T')[0]; // Return date in "yyyy-MM-dd" format
   };
 
   const addCategory = async (categoryName: string, type: 'expense' | 'income') => {
@@ -62,7 +64,6 @@ const Transactions: React.FC = () => {
       }
 
       const newCategory = await response.json();
-      console.log("New Category:", newCategory);
       if (type === 'expense') {
         setExpenseCategories([...expenseCategories, newCategory.name.toLowerCase()]);
       } else {
@@ -86,8 +87,6 @@ const Transactions: React.FC = () => {
         return;
       }
 
-      console.log("Updating Expense Data:", completeExpense);
-
       const response = await fetch(`/api/expenses/${completeExpense.ExpenseID}`, {
         method: 'PUT',
         headers: {
@@ -103,7 +102,6 @@ const Transactions: React.FC = () => {
       }
 
       const updatedExpense = await response.json();
-      console.log("Updated Expense:", updatedExpense);
       setExpenses(expenses.map(e => (e.ExpenseID === updatedExpense.ExpenseID ? updatedExpense : e)));
     } catch (error) {
       console.error("Error updating expense:", error);
@@ -123,7 +121,6 @@ const Transactions: React.FC = () => {
 
   const createExpense = async (newExpense: Omit<Expense, 'ExpenseID'>) => {
     try {
-      console.log("New Expense Data:", newExpense);
       if (!newExpense.Date || isNaN(new Date(newExpense.Date).getTime())) {
         console.error("Invalid date for expense:", newExpense.Date);
         return;
@@ -135,8 +132,6 @@ const Transactions: React.FC = () => {
         Amount: parseFloat(newExpense.Amount as any), // Ensure amount is a number
         Date: formatDate(newExpense.Date), // Format date to "yyyy-MM-dd"
       };
-
-      console.log("Creating expense:", completeExpense);
 
       const response = await fetch('/api/expenses', {
         method: 'POST',
@@ -153,7 +148,6 @@ const Transactions: React.FC = () => {
       }
 
       const createdExpense = await response.json();
-      console.log("Created Expense:", createdExpense);
       setExpenses([...expenses, createdExpense]);
     } catch (error) {
       console.error("Error creating expense:", error);
@@ -168,11 +162,6 @@ const Transactions: React.FC = () => {
         Date: formatDate(income.Date), // Format date to "yyyy-MM-dd"
       };
 
-      if (!completeIncome.Date) {
-        console.error("Invalid date for income:", completeIncome);
-        return;
-      }
-
       const response = await fetch(`/api/incomes/${completeIncome.IncomeID}`, {
         method: 'PUT',
         headers: {
@@ -180,8 +169,8 @@ const Transactions: React.FC = () => {
         },
         body: JSON.stringify(completeIncome),
       });
+
       const updatedIncome = await response.json();
-      console.log("Updated Income:", updatedIncome);
       setIncomes(incomes.map(i => (i.IncomeID === updatedIncome.IncomeID ? updatedIncome : i)));
     } catch (error) {
       console.error("Error updating income:", error);
@@ -201,7 +190,6 @@ const Transactions: React.FC = () => {
 
   const createIncome = async (newIncome: Omit<Income, 'IncomeID'>) => {
     try {
-      console.log("New Income Data:", newIncome);
       if (!newIncome.Date || isNaN(new Date(newIncome.Date).getTime())) {
         console.error("Invalid date for income:", newIncome.Date);
         return;
@@ -213,8 +201,6 @@ const Transactions: React.FC = () => {
         Amount: parseFloat(newIncome.Amount as any), // Ensure amount is a number
         Date: formatDate(newIncome.Date), // Format date to "yyyy-MM-dd"
       };
-
-      console.log("Creating income:", completeIncome);
 
       const response = await fetch('/api/incomes', {
         method: 'POST',
@@ -231,7 +217,6 @@ const Transactions: React.FC = () => {
       }
 
       const createdIncome = await response.json();
-      console.log("Created Income:", createdIncome);
       setIncomes([...incomes, createdIncome]);
     } catch (error) {
       console.error("Error creating income:", error);
@@ -241,12 +226,6 @@ const Transactions: React.FC = () => {
   return (
     <div>
       <h1>Transactions</h1>
-      <div>
-        <label>
-          Email:
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        </label>
-      </div>
       <div style={{ display: 'flex', justifyContent: 'space-around' }}>
         <Expenses
           expenses={expenses}
@@ -254,8 +233,8 @@ const Transactions: React.FC = () => {
           deleteExpense={deleteExpense}
           createExpense={createExpense}
           addCategory={(categoryName: string) => addCategory(categoryName, 'expense')}
-          categories={expenseCategories} // Pass expense categories prop
-          userEmail={email} // Pass user email
+          categories={expenseCategories}
+          userEmail={email}
         />
         <Incomes
           incomes={incomes}
@@ -263,8 +242,8 @@ const Transactions: React.FC = () => {
           deleteIncome={deleteIncome}
           createIncome={createIncome}
           addCategory={(categoryName: string) => addCategory(categoryName, 'income')}
-          categories={incomeCategories} // Pass income categories prop
-          userEmail={email} // Pass user email
+          categories={incomeCategories}
+          userEmail={email}
         />
       </div>
     </div>

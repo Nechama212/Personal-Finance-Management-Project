@@ -1,22 +1,24 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { useEffect, FC, useState } from 'react';
 import { format, getMonth, getYear } from 'date-fns';
 import CategorySelector from './CategorySelector';
 import BudgetInput from './BudgetInput';
-import { Expense, Budget } from './MonthlyBudgetTypes'; 
+import { Expense, Budget } from './MonthlyBudgetTypes';
+import { useUser } from '../../context/UserContext'; 
 
 const MonthlyBudget: FC = () => {
-  const [userEmail, setUserEmail] = useState<string>('');
+  const { email } = useUser(); 
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [monthlyBudgets, setMonthlyBudgets] = useState<Budget[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [showBudgetForm, setShowBudgetForm] = useState<boolean>(false);
-  const [showAddCategory, setShowAddCategory] = useState<boolean>(false); // Show add category form
-  const [newCategory, setNewCategory] = useState<string>(''); // New category input
+  const [showAddCategory, setShowAddCategory] = useState<boolean>(false);
+  const [newCategory, setNewCategory] = useState<string>('');
 
+  // Fetch data when the email is available
   useEffect(() => {
-    if (userEmail) {
-      fetch(`/api/expenses/${userEmail}`)
+    if (email) {
+      fetch(`/api/expenses/${email}`)
         .then(response => response.json())
         .then((data: Expense[]) => {
           const categoryNames = [...new Set(data.map(expense => expense.CategoryName.toLowerCase()))];
@@ -25,7 +27,7 @@ const MonthlyBudget: FC = () => {
         })
         .catch(error => console.error('Error fetching expense categories:', error));
 
-      fetch(`/api/monthlyBudgets/${userEmail}`)
+      fetch(`/api/monthlyBudgets/${email}`)
         .then(response => response.json())
         .then((data: Budget[]) => {
           if (Array.isArray(data)) {
@@ -36,7 +38,7 @@ const MonthlyBudget: FC = () => {
         })
         .catch(error => console.error('Error fetching budgets:', error));
     }
-  }, [userEmail]);
+  }, [email]);
 
   const handleCategorySelect = (category: string) => {
     if (category === 'Other') {
@@ -55,7 +57,7 @@ const MonthlyBudget: FC = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ CategoryName: newCategory, Email: userEmail }),
+          body: JSON.stringify({ CategoryName: newCategory, Email: email }),
         });
 
         if (!response.ok) {
@@ -83,7 +85,7 @@ const MonthlyBudget: FC = () => {
     }
 
     const data = {
-      Email: userEmail,
+      Email: email,
       CategoryName: selectedCategory,
       BudgetAmount: parseFloat(amount.toString()),
       SpentAmount: 0,
@@ -133,9 +135,6 @@ const MonthlyBudget: FC = () => {
       .filter(expense => expense.CategoryName.toLowerCase() === lowerCategoryName)
       .reduce((total, expense) => total + expense.Amount, 0);
   };
-  
-
-
 
   const isOverBudget = (budget: Budget) => {
     const spentAmount = calculateSpentAmount(budget.CategoryName);
@@ -145,21 +144,15 @@ const MonthlyBudget: FC = () => {
   return (
     <div>
       <h2>Monthly Budget</h2>
-      <input 
-        type="email" 
-        placeholder="Enter your email"
-        value={userEmail}
-        onChange={(e) => setUserEmail(e.target.value)} 
-      />
-      {userEmail && (
+      {email && (
         <>
           <button onClick={() => setShowBudgetForm(true)}>Create Monthly Budget</button>
-          
+
           {showBudgetForm && (
             <div>
-              <CategorySelector 
+              <CategorySelector
                 categories={["Select Category", ...categories, "Other"]}
-                onSelect={handleCategorySelect} 
+                onSelect={handleCategorySelect}
               />
               {selectedCategory && selectedCategory !== "Select Category" && !showAddCategory && (
                 <BudgetInput onSave={handleBudgetSave} />
