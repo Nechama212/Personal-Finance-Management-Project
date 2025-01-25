@@ -24,7 +24,12 @@ const Incomes: React.FC<{
   useEffect(() => {
     if (userEmail) {
       fetch(`/api/incomes/${userEmail}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then((data: Income[]) => {
           const categoryNames = [...new Set(data.map(income => income.CategoryName.toLowerCase()))];
           setIncomeCategories(categoryNames);
